@@ -8,6 +8,7 @@ import datetime
 import wolframalpha
 import os
 import sys
+#le parole non sono scritte correttamente per addolcire il suono
 
 engine = pyttsx3.init('sapi5')
 
@@ -17,7 +18,7 @@ voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[len(voices)-1].id)
 
 def speak(audio):
-    print('Computer: ' + audio)
+    print('Jarvis: ' + audio)
     engine.say(audio)
     engine.runAndWait()
 
@@ -41,9 +42,9 @@ speak('Come posso aiutarla?')
 def myCommand():
    
     r = sr.Recognizer()                                                                                   
-    with sr.Microphone() as source:                                                                       
-        print("Listening...")
-        r.pause_threshold =  2
+    with sr.Microphone() as source:   
+        speak('mi dica sono in ascolto...')
+        r.pause_threshold =  3
         audio = r.listen(source)
     try:
         query = r.recognize_google(audio, language='it-IT')
@@ -94,10 +95,10 @@ if __name__ == '__main__':
                     server.login("mail", 'pass')
                     server.sendmail('Your_Username', "Recipient_Username", content)
                     server.close()
-                    speak('Email inviata con successo!')
+                    speak("La sua mail Ã¨ stata inviata con successo!")
 
                 except:
-                    speak('Mi dispiace signore i chitauri hanno attaccato i server google, non sono in grado di inviare mail!')
+                    speak('Mi dispiace signore i chitauri hanno attaccato i server google, non sono in grado di inviare la mail!')
 
 
         elif 'niente' in query or 'Jarvis abortire' in query or 'Fermati' in query or 'Jarvis non ora' in query:
@@ -128,7 +129,7 @@ if __name__ == '__main__':
                 except:
                     results = wikipedia.summary(query, sentences=2)
                     speak('Got it.')
-                    speak('WIKIPEDIA says - ')
+                    speak('WIKIPEDIA dice  - ')
                     speak(results)
         
             except:
