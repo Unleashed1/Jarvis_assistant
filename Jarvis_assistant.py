@@ -7,25 +7,34 @@ import wikipedia
 import datetime
 import wolframalpha
 import os
+import platform
 import sys
+
+
+
 #inserire qui sotto i vostri dati da usare durante l'utilizzo dell'assistente vocale
 nome ='vostro nome'
 mail = 'vostra mail'
 rubrica = {}
+client = wolframalpha.Client('Your_App_ID')
 #le parole non sono scritte correttamente per addolcire il suono
 
-engine = pyttsx3.init('sapi5')
-
-client = wolframalpha.Client('Your_App_ID')
-
+#controllo del so in uso per il motore da usare
+if platform.system()== 'Windows':
+    engine = pyttsx3.init('sapi5')
+if platform.system() == 'Ubuntu' or platform.system() == 'Debian':
+    engine = pyttsx3.init('espeak')
+#selezione voce
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[0].id)
 
+#funzione di riproduzione suono
 def speak(audio):
     print('Jarvis: ' + audio)
     engine.say(audio)
     engine.runAndWait()
 
+#messaggio di benvenuto 
 def greetMe():
     currentH = int(datetime.datetime.now().hour)
     if currentH >= 0 and currentH < 12:
@@ -48,9 +57,10 @@ def myCommand():
     with sr.Microphone() as source:
         recognizer_instance.adjust_for_ambient_noise(source)
         speak('Come posso aiutarla?')
-        recognizer_instance.pause_threshold = 1
-        audio = recognizer_instance.listen(source)
+        recognizer_instance.pause_threshold = 0.8
         print("Listening...")
+        audio = recognizer_instance.listen(source)
+
     try:
         query = recognizer_instance.recognize_google(audio, language='it-IT')
         print(nome + ': ' + query + '\n')
@@ -81,7 +91,7 @@ if __name__ == '__main__':
             speak('okay')
             webbrowser.open('www.gmail.it')
 
-        elif 'Jarvis come va' in query or "Jarvis come va?" in query or 'Jarvis come stai?' in query:
+        elif 'Jarvis come va' in query or 'Jarvis come stai?' in query:
             stMsgs = ['Hail idra!, ops questo non avrei dovuto dirlo!', 'Sto bene grazie signore', 'Bene!', 'Tutto ok e pronto ad eseguire i suoi ordini signore']
             speak(random.choice(stMsgs))
 
@@ -132,6 +142,7 @@ if __name__ == '__main__':
                     speak(results)
                     
                 except:
+                    wikipediaapi.Wikipedia('it')
                     results = wikipedia.summary(query, sentences=2)
                     speak('Ci siamo.')
                     speak('WIKIPEDIA dice  - ')

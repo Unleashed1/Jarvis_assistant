@@ -1,4 +1,6 @@
 import pyttsx3
+import platform
+print(platform.system())
 engine = pyttsx3.init()
 
 voices = engine.getProperty('voices')
