@@ -9,7 +9,7 @@ import wolframalpha
 import os
 import platform
 import sys
-
+import time 
 
 
 #inserire qui sotto i vostri dati da usare durante l'utilizzo dell'assistente vocale
@@ -78,10 +78,18 @@ if __name__ == '__main__':
     
         query = myCommand();
         query = query.lower()
-        
-        if 'apri youtube' in query:
+        if 'apri facebook' in query :
+            speak('subito signore.')
+            webbroowser.open('www.facebook.it');
+
+        elif 'Jarvis apri youtube' in query:
             speak('okay')
-            webbrowser.open('www.youtube.it')    
+            webbrowser.open('www.youtube.it')
+            
+        elif 'jarvis dimmi che ore sono' in query or 'che ore sono' in query or 'ora' in query:
+            a = time.strftime("%H:%M:%S")
+            b = time.strftime("%d/%m/%Y")
+            speak('signore sono le ore:'+ a + 'del:'+ b )
 
         elif 'Jarvis apri google' in query:
             speak('okay')
