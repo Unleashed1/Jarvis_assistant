@@ -11,6 +11,7 @@ import platform
 import sys
 import time 
 
+flag = True
 
 #inserire qui sotto i vostri dati da usare durante l'utilizzo dell'assistente vocale
 nome ='vostro nome'
@@ -49,15 +50,29 @@ def greetMe():
 greetMe()
 
 speak('Sono la sua assistente, Jarvis')
+speak('Come posso aiutarla?')
+def hold_on():
+    recognizer_instance = sr.Recognizer()
+    
+    with sr.Microphone() as source:
+        recognizer_instance.adjust_for_ambient_noise(source)
+        recognizer_instance.pause_threshold = 0.5
+        print("Listening...")
+        audio = recognizer_instance.listen(source)
+        
+    try:
+        query = recognizer_instance.recognize_google(audio, language='it-IT')
+    except sr.UnknownValueError:
+        return query
 
-
+    return query
+    
 def myCommand():
     recognizer_instance = sr.Recognizer()
     
     with sr.Microphone() as source:
         recognizer_instance.adjust_for_ambient_noise(source)
-        speak('Come posso aiutarla?')
-        recognizer_instance.pause_threshold = 0.8
+        recognizer_instance.pause_threshold = 0.5
         print("Listening...")
         audio = recognizer_instance.listen(source)
 
@@ -75,39 +90,42 @@ def myCommand():
 if __name__ == '__main__':
 
     while True:
-    
+        flag = True;
         query = myCommand();
         query = query.lower()
         if 'apri facebook' in query :
             speak('subito signore.')
-            webbroowser.open('www.facebook.it');
+            webbrowser.open('www.facebook.it');
 
-        elif 'Jarvis apri youtube' in query:
+        elif 'jarvis apri youtube' in query:
             speak('okay')
             webbrowser.open('www.youtube.it')
+            
+        elif 'jarvis apri github' in query or 'apri github' in query :
+            webbrowser.open('https://github.com/')
             
         elif 'jarvis dimmi che ore sono' in query or 'che ore sono' in query or 'ora' in query:
             a = time.strftime("%H:%M:%S")
             b = time.strftime("%d/%m/%Y")
             speak('signore sono le ore:'+ a + 'del:'+ b )
 
-        elif 'Jarvis apri google' in query:
+        elif 'jarvis apri google' in query:
             speak('okay')
             webbrowser.open('www.google.it')
 
-        elif 'Jarvis apri g mail' in query:
+        elif 'jarvis apri g mail' in query:
             speak('okay')
             webbrowser.open('www.gmail.it')
 
-        elif 'Jarvis come va' in query or 'Jarvis come stai?' in query:
+        elif 'jarvis come va' in query or 'jarvis come stai?' in query:
             stMsgs = ['Hail idra!, ops questo non avrei dovuto dirlo!', 'Sto bene grazie signore', 'Bene!', 'Tutto ok e pronto ad eseguire i suoi ordini signore']
             speak(random.choice(stMsgs))
 
-        elif 'email' in query:
+        elif 'email' in query or 'jarvis manda una mail' in query:
             speak('A chi devo spedire questa mail?')
             recipient = myCommand()
 
-            if 'me' in recipient:
+            if 'ok' in recipient:
                 try:
                     speak('Cosa vuole che scriva?')
                     content = myCommand()
@@ -127,17 +145,14 @@ if __name__ == '__main__':
         elif 'niente' in query or 'Jarvis abortire' in query or 'Fermati' in query or 'Jarvis non ora' in query:
             speak('okay')
             speak('A presto signore, buona giornata.')
-            sys.exit()
            
         elif ' ciao jarvis' in query:
             speak('Salve signore!')
 
-        elif 'Grazie jarvis' in query or 'Grazie' in query or '':
-            speak('Arrivederci signore, le auguro una buona giornata.')
+        elif 'Basta così per oggi' in query or 'chiuditi' in query or 'off':
+            speak('Arrivederci signore.')
             sys.exit()
                         
-            
-
         else:
             query = query
             speak('Faccio una ricerca...')
@@ -158,5 +173,11 @@ if __name__ == '__main__':
         
             except:
                 webbrowser.open('www.google.it')
-        
-        speak('Attendo un suo comando...')
+        while(flag):
+            query = hold_on()
+            query = query.lower()
+            if 'jarvis' in query or 'hey jarvis' in query:
+                flag = False
+                speak('Attendo un suo comando.')
+                break
+            
